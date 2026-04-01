@@ -1,230 +1,249 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Simulador P2P Crypto PRO</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; background: #121212; color: #f5f5f5; margin: 0; padding: 0;}
-        .container { max-width: 900px; margin: 20px auto; padding: 20px; background: #1e1e1e; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.5);}
-        h1 { text-align: center; color: #00ffff; margin-bottom: 20px;}
-        .slider-group { margin: 15px 0; }
-        label { display: block; margin-bottom: 5px; font-weight: bold;}
-        input[type=range] { width: 100%; }
-        .valores { text-align: center; margin-top: 5px; }
-        .resultado { text-align: center; font-size: 18px; padding: 15px; border-radius: 10px; margin-top: 20px;}
-        .ganancia { background: #28a745; color: #ffffff; }
-        .perdida { background: #dc3545; color: #ffffff; }
-        .toggle { display: flex; justify-content: center; margin: 10px 0; }
-        .toggle button { margin: 0 10px; padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size:16px; color:#f5f5f5; background:#333; transition:0.2s;}
-        .toggle button.active { background: #00ffff; color:#121212; }
-        #actualizarPrecio { display: block; margin: 20px auto; padding: 12px 25px; background: #ff9800; color:black; border:none; border-radius:10px; cursor:pointer; font-size:16px;}
-        canvas { margin-top: 20px; background:#222; border-radius:10px; padding:10px; }
-        .ads { text-align:center; margin:20px 0; color:#999; }
-        .res-toggle button { margin: 5px; padding:5px 10px; border:none; border-radius:8px; cursor:pointer; }
-    </style>
+<meta charset="UTF-8">
+<title>Simulador P2P Crypto PRO</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body { font-family: Arial, sans-serif; background: #121212; color: #f5f5f5; margin: 0; padding: 0;}
+.container { max-width: 900px; margin: 20px auto; padding: 20px; background: #1e1e1e; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.5);}
+h1 { text-align: center; color: #00ffff; margin-bottom: 20px;}
+
+.slider-group { margin: 15px 0; }
+label { display: block; margin-bottom: 5px; font-weight: bold;}
+input[type=range] { width: 100%; }
+
+.valores { text-align: center; margin-top: 5px; }
+
+.resultado { text-align: center; font-size: 18px; padding: 15px; border-radius: 10px; margin-top: 20px;}
+.ganancia { background: #28a745; }
+.perdida { background: #dc3545; }
+
+.toggle { display: flex; justify-content: center; margin: 10px 0; }
+.toggle button { margin: 0 10px; padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; background:#333; color:white;}
+.toggle button.active { background: #00ffff; color:#121212; }
+
+#actualizarPrecio {
+    display: block;
+    margin: 20px auto;
+    padding: 14px 25px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size:16px;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+canvas { margin-top: 20px; background:#222; border-radius:10px; padding:10px; }
+
+.res-toggle button {
+    margin: 5px;
+    padding:5px 10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.ads { text-align:center; margin:20px 0; color:#999; }
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>Simulador P2P Crypto PRO</h1>
 
-        <!-- Toggle COP/USD -->
-        <div class="toggle">
-            <button id="copBtn" class="active">COP</button>
-            <button id="usdBtn">USD</button>
-        </div>
+<div class="container">
+<h1>Simulador P2P Crypto PRO</h1>
 
-        <!-- Sliders -->
-        <div class="slider-group">
-            <label for="capital">Capital inicial (COP)</label>
-            <input type="range" id="capital" min="50000" max="10000000" step="1" value="10000">
-            <div class="valores" id="capitalVal">500,000 COP</div>
-        </div>
+<div class="toggle">
+    <button id="copBtn" class="active">COP</button>
+    <button id="usdBtn">USD</button>
+</div>
 
-        <div class="slider-group">
-            <label for="ciclos">Ciclos de compra/venta</label>
-            <input type="range" id="ciclos" min="1" max="10" step="1" value="3">
-            <div class="valores" id="ciclosVal">3</div>
-        </div>
+<div class="slider-group">
+    <label>Capital inicial</label>
+    <input type="range" id="capital" min="50000" max="10000000" value="500000">
+    <div class="valores" id="capitalVal"></div>
+</div>
 
-        <div class="slider-group">
-            <label for="precioCompra">Precio de compra USDT</label>
-            <input type="range" id="precioCompra" min="3000" max="6000" step="10" value="4500">
-            <div class="valores" id="precioCompraVal">4,500 COP</div>
-        </div>
+<div class="slider-group">
+    <label>Ciclos</label>
+    <input type="range" id="ciclos" min="1" max="10" value="3">
+    <div class="valores" id="ciclosVal"></div>
+</div>
 
-        <div class="slider-group">
-            <label for="precioVenta">Precio de venta USDT</label>
-            <input type="range" id="precioVenta" min="3000" max="6000" step="10" value="4600">
-            <div class="valores" id="precioVentaVal">4,600 COP</div>
-        </div>
+<div class="slider-group">
+    <label>Precio compra USDT</label>
+    <input type="range" id="precioCompra" min="3000" max="6000" value="4500">
+    <div class="valores" id="precioCompraVal"></div>
+</div>
 
-        <!-- Resultado con toggle de moneda -->
-        <div id="resultado" class="resultado">
-            <div id="resValores"></div>
-            <div class="res-toggle">
-                <button id="resCop">COP</button>
-                <button id="resUsd">USD</button>
-            </div>
-        </div>
+<div class="slider-group">
+    <label>Precio venta USDT</label>
+    <input type="range" id="precioVenta" min="3000" max="6000" value="4600">
+    <div class="valores" id="precioVentaVal"></div>
+</div>
 
-        <!-- Botón actualizar precio real + afiliado -->
-        <button id="actualizarPrecio">Actualizar precio real y usar mi enlace</button>
-
-        <!-- Gráfica apilada -->
-        <canvas id="grafica"></canvas>
-
-        <!-- Espacios para AdSense -->
-        <div class="ads">
-            <p>Publicidad</p>
-        </div>
+<div id="resultado" class="resultado">
+    <div id="resValores"></div>
+    <div class="res-toggle">
+        <button id="resCop">COP</button>
+        <button id="resUsd">USD</button>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Sliders y valores
-        const capitalSlider = document.getElementById("capital");
-        const ciclosSlider = document.getElementById("ciclos");
-        const precioCompraSlider = document.getElementById("precioCompra");
-        const precioVentaSlider = document.getElementById("precioVenta");
+<button id="actualizarPrecio">💰 Probar en Binance</button>
 
-        const capitalVal = document.getElementById("capitalVal");
-        const ciclosVal = document.getElementById("ciclosVal");
-        const precioCompraVal = document.getElementById("precioCompraVal");
-        const precioVentaVal = document.getElementById("precioVentaVal");
+<canvas id="grafica"></canvas>
 
-        const resultado = document.getElementById("resultado");
-        const resValores = document.getElementById("resValores");
+<div class="ads">Publicidad</div>
 
-        const chartCtx = document.getElementById("grafica").getContext('2d');
-        let chart = new Chart(chartCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Inversión + Ganancia'],
-                datasets: [
-                    { label: 'Inversión Inicial', data: [0], backgroundColor: '#00ffff' },
-                    { label: 'Ganancia Neta', data: [0], backgroundColor: '#ff9800' }
-                ]
-            },
-            options: {
-                responsive:true,
-                plugins: { legend:{ position:'top' } },
-                scales: { x:{ stacked:true }, y:{ stacked:true, beginAtZero:true } }
-            }
-        });
+</div>
 
-        // Toggle principal COP/USD
-        const copBtn = document.getElementById("copBtn");
-        const usdBtn = document.getElementById("usdBtn");
+<script>
 
-        let monedaPrincipal = "COP";
-        let mostrarEnCOP = true;
+const capitalSlider = document.getElementById("capital");
+const ciclosSlider = document.getElementById("ciclos");
+const precioCompraSlider = document.getElementById("precioCompra");
+const precioVentaSlider = document.getElementById("precioVenta");
 
-        function actualizarValores() {
-            capitalVal.innerText = parseInt(capitalSlider.value).toLocaleString() + " COP";
-            ciclosVal.innerText = ciclosSlider.value;
-            if(monedaPrincipal=="USD"){
-                precioCompraVal.innerText = parseFloat(precioCompraSlider.value).toFixed(3) + " USD";
-                precioVentaVal.innerText = parseFloat(precioVentaSlider.value).toFixed(3) + " USD";
-            } else {
-                precioCompraVal.innerText = parseInt(precioCompraSlider.value).toLocaleString() + " COP";
-                precioVentaVal.innerText = parseInt(precioVentaSlider.value).toLocaleString() + " COP";
-            }
-        }
+const capitalVal = document.getElementById("capitalVal");
+const ciclosVal = document.getElementById("ciclosVal");
+const precioCompraVal = document.getElementById("precioCompraVal");
+const precioVentaVal = document.getElementById("precioVentaVal");
 
-        function calcularResultado() {
-            let capital = parseFloat(capitalSlider.value);
-            let ciclos = parseInt(ciclosSlider.value);
-            let precioCompra = parseFloat(precioCompraSlider.value);
-            let precioVenta = parseFloat(precioVentaSlider.value);
+const resultado = document.getElementById("resultado");
+const resValores = document.getElementById("resValores");
 
-            let cantidadInicialUsdt = capital / precioCompra;
-            let valorBruto = cantidadInicialUsdt;
+let mostrarEnCOP = true;
+let monedaPrincipal = "COP";
 
-            for(let i=0; i<ciclos; i++){
-                valorBruto += cantidadInicialUsdt * precioVenta / precioCompra - cantidadInicialUsdt;
-                valorBruto *= 0.996; // 4x1000
-            }
+// Gráfica
+const ctx = document.getElementById("grafica").getContext("2d");
+let chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+        labels: ["Resultado"],
+        datasets: [
+            { label: "Inversión", data: [0] },
+            { label: "Ganancia", data: [0] }
+        ]
+    },
+    options: {
+        responsive: true,
+        scales: { x:{ stacked:true }, y:{ stacked:true } }
+    }
+});
 
-            let ganancia = valorBruto - cantidadInicialUsdt;
-            let porcentaje = (ganancia / cantidadInicialUsdt * 100).toFixed(2);
+function actualizarValores(){
+    capitalVal.innerText = Number(capitalSlider.value).toLocaleString() + " COP";
+    ciclosVal.innerText = ciclosSlider.value;
 
-            let invMostrar = cantidadInicialUsdt;
-            let gananciaMostrar = ganancia;
-            let sufijo = "USDT";
+    if(monedaPrincipal=="USD"){
+        precioCompraVal.innerText = precioCompraSlider.value + " USD";
+        precioVentaVal.innerText = precioVentaSlider.value + " USD";
+    }else{
+        precioCompraVal.innerText = Number(precioCompraSlider.value).toLocaleString() + " COP";
+        precioVentaVal.innerText = Number(precioVentaSlider.value).toLocaleString() + " COP";
+    }
+}
 
-            if(mostrarEnCOP){
-                invMostrar = cantidadInicialUsdt * precioCompra;
-                gananciaMostrar = ganancia * precioCompra;
-                sufijo = "COP";
-            }
+function calcularResultado(){
 
-            resultado.className = "resultado " + (ganancia>=0?"ganancia":"perdida");
-            resValores.innerHTML = `
-                💰 Final: ${(valorBruto*(mostrarEnCOP?precioCompra:1)).toFixed(2)} ${sufijo} <br>
-                📊 Inicio: ${invMostrar.toFixed(2)} ${sufijo} <br>
-                🚀 Ganancia: ${gananciaMostrar.toFixed(2)} ${sufijo} (${porcentaje}%)
-            `;
+    let capital = parseFloat(capitalSlider.value);
+    let ciclos = parseInt(ciclosSlider.value);
+    let compra = parseFloat(precioCompraSlider.value);
+    let venta = parseFloat(precioVentaSlider.value);
 
-            chart.data.datasets[0].data = [invMostrar.toFixed(2)];
-            chart.data.datasets[1].data = [gananciaMostrar.toFixed(2)];
-            chart.update();
-        }
+    let usdt = capital / compra;
+    let total = usdt;
 
-        [capitalSlider, ciclosSlider, precioCompraSlider, precioVentaSlider].forEach(slider=>{
-            slider.addEventListener("input", ()=>{
-                actualizarValores();
-                calcularResultado();
-            });
-        });
+    for(let i=0;i<ciclos;i++){
+        total += usdt * venta / compra - usdt;
+        total *= 0.996;
+    }
 
-        // Toggle COP/USD principal
-        copBtn.addEventListener("click", ()=>{
-            monedaPrincipal="COP";
-            mostrarEnCOP = true;
-            precioCompraSlider.min=3000; precioCompraSlider.max=6000; precioCompraSlider.step=10;
-            precioVentaSlider.min=3000; precioVentaSlider.max=6000; precioVentaSlider.step=10;
-            actualizarValores();
-            calcularResultado();
-        });
+    let ganancia = total - usdt;
+    let porcentaje = (ganancia/usdt*100).toFixed(2);
 
-        usdBtn.addEventListener("click", ()=>{
-            monedaPrincipal="USD";
-            mostrarEnCOP=false;
-            precioCompraSlider.min=0.99; precioCompraSlider.max=1.199; precioCompraSlider.step=0.001;
-            precioVentaSlider.min=0.99; precioVentaSlider.max=1.199; precioVentaSlider.step=0.001;
-            actualizarValores();
-            calcularResultado();
-        });
+    let inv = usdt;
+    let gan = ganancia;
+    let sufijo="USDT";
 
-        // Toggle en el recuadro de resultado
-        document.getElementById("resCop").addEventListener("click", ()=>{
-            mostrarEnCOP=true;
-            calcularResultado();
-        });
-        document.getElementById("resUsd").addEventListener("click", ()=>{
-            mostrarEnCOP=false;
-            calcularResultado();
-        });
+    if(mostrarEnCOP){
+        inv = usdt * compra;
+        gan = ganancia * compra;
+        sufijo="COP";
+    }
 
-        // Botón actualizar precio real + link afiliado
-        document.getElementById("actualizarPrecio").addEventListener("click", async ()=>{
-            try{
-                const response = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=USDTCOP");
-                const data = await response.json();
-                const precioReal = parseFloat(data.price);
-                precioCompraSlider.value = precioReal;
-                precioVentaSlider.value = precioReal*1.01;
-                actualizarValores();
-                calcularResultado();
-                window.open("TU_LINK_DE_AFILIADO_AQUI","_blank");
-            } catch(e){
-                alert("No se pudo actualizar el precio real de Binance.");
-            }
-        });
+    resultado.className = "resultado " + (ganancia>=0?"ganancia":"perdida");
 
+    resValores.innerHTML = `
+    💰 Final: ${(total*(mostrarEnCOP?compra:1)).toFixed(2)} ${sufijo}<br>
+    📊 Inicio: ${inv.toFixed(2)} ${sufijo}<br>
+    🚀 Ganancia: ${gan.toFixed(2)} ${sufijo} (${porcentaje}%)
+    `;
+
+    chart.data.datasets[0].data=[inv];
+    chart.data.datasets[1].data=[gan];
+    chart.update();
+
+    // BOTÓN DINÁMICO
+    let boton = document.getElementById("actualizarPrecio");
+
+    if(ganancia>0){
+        boton.style.background="#00ff00";
+        boton.style.color="#121212";
+        boton.innerText="🚀 Ganar dinero en Binance";
+    }else{
+        boton.style.background="#ff4444";
+        boton.style.color="#fff";
+        boton.innerText="⚠️ Ajustar y probar en Binance";
+    }
+}
+
+// Eventos
+[capitalSlider,ciclosSlider,precioCompraSlider,precioVentaSlider].forEach(s=>{
+    s.addEventListener("input",()=>{
         actualizarValores();
         calcularResultado();
-    </script>
+    });
+});
+
+// Toggle principal
+document.getElementById("copBtn").onclick=()=>{
+    monedaPrincipal="COP";
+    mostrarEnCOP=true;
+    precioCompraSlider.min=3000;
+    precioCompraSlider.max=6000;
+    precioVentaSlider.min=3000;
+    precioVentaSlider.max=6000;
+    actualizarValores(); calcularResultado();
+};
+
+document.getElementById("usdBtn").onclick=()=>{
+    monedaPrincipal="USD";
+    mostrarEnCOP=false;
+    precioCompraSlider.min=0.99;
+    precioCompraSlider.max=1.199;
+    precioVentaSlider.min=0.99;
+    precioVentaSlider.max=1.199;
+    actualizarValores(); calcularResultado();
+};
+
+// Toggle resultado
+document.getElementById("resCop").onclick=()=>{mostrarEnCOP=true;calcularResultado();}
+document.getElementById("resUsd").onclick=()=>{mostrarEnCOP=false;calcularResultado();}
+
+// BOTÓN AFILIADO
+document.getElementById("actualizarPrecio").onclick=()=>{
+    window.open("https://www.binance.com/referral/earn-together/refer2earn-usdc/claim?hl=es-LA&ref=GRO_28502_JI900&utm_source=default","_blank");
+};
+
+actualizarValores();
+calcularResultado();
+
+</script>
+
 </body>
 </html>
