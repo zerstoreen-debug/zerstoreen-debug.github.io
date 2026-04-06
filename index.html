@@ -1,57 +1,149 @@
-CÓDIGO MEJORADO:
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6691676241181593" crossorigin="anonymous"></script>
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-R0TV08H2H8"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-R0TV08H2H8');
-</script>
 
 <meta charset="UTF-8">
 <title>Simulador P2P Crypto PRO</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body { background:#121212; color:#fff; font-family:Arial; }
-.container { max-width:900px; margin:auto; padding:20px; background:#1e1e1e; border-radius:15px;}
-h1 { text-align:center; color:#00ffff;}
 
-.toggle { display:flex; justify-content:center; margin:15px;}
+body {
+ background:#121212;
+ color:#fff;
+ font-family:Arial;
+}
+
+.container {
+ max-width:1100px;
+ margin:auto;
+ padding:20px;
+ background:#1e1e1e;
+ border-radius:15px;
+}
+
+h1 {
+ text-align:center;
+ color:#00ffff;
+ margin-bottom:20px;
+}
+
+/* BOTONES */
+.toggle {
+ display:flex;
+ justify-content:center;
+ gap:10px;
+ margin-bottom:20px;
+}
+
 .toggle button {
- padding:10px 20px; margin:5px;
- border:none; border-radius:10px;
- background:#333; color:white; cursor:pointer;
-}
-.active { background:#00ffff; color:#000;}
-
-.slider-group { margin:15px 0;}
-.valores { text-align:center; color:#ccc;}
-
-.resultado { margin-top:20px; padding:15px; border-radius:10px; text-align:center;}
-.ganancia { background:#28a745;}
-.perdida { background:#dc3545;}
-
-.res-toggle button { margin:5px; padding:5px 10px; border:none; border-radius:8px; cursor:pointer;}
-
-button#actualizarPrecio {
- margin:20px auto; display:block;
- padding:12px; border:none; border-radius:10px;
- background:#ff9800; cursor:pointer;
+ padding:10px 20px;
+ border:none;
+ border-radius:10px;
+ background:#333;
+ color:white;
+ cursor:pointer;
 }
 
-canvas { background:#222; margin-top:20px; border-radius:10px;}
+.toggle .active {
+ background:#00ffff;
+ color:#000;
+}
 
-.info { margin-top:40px; padding:20px; background:#181818; border-radius:10px;}
-.info h2 { color:#00ffff;}
-.info p { color:#ccc;}
+/* SLIDERS */
+.slider-group {
+ margin-bottom:20px;
+}
+
+label {
+ font-weight:bold;
+}
+
+.valores {
+ text-align:right;
+ color:#aaa;
+ font-size:14px;
+}
+
+/* SLIDER PRO ANIMADO */
+input[type=range] {
+ -webkit-appearance:none;
+ width:100%;
+ height:12px;
+ border-radius:10px;
+ outline:none;
+ margin-top:10px;
+ background:#333;
+}
+
+/* TRACK DINÁMICO */
+input[type=range]::-webkit-slider-runnable-track {
+ height:12px;
+ border-radius:10px;
+ background: var(--track-color, #00ffff);
+}
+
+/* THUMB */
+input[type=range]::-webkit-slider-thumb {
+ -webkit-appearance:none;
+ width:22px;
+ height:22px;
+ border-radius:50%;
+ background:#fff;
+ cursor:pointer;
+ margin-top:-5px;
+ box-shadow:0 0 10px rgba(0,255,255,0.8);
+ transition:0.2s;
+}
+
+input[type=range]:hover::-webkit-slider-thumb {
+ transform:scale(1.2);
+}
+
+/* RESULTADO */
+.resultado {
+ margin-top:25px;
+ padding:15px;
+ border-radius:10px;
+ text-align:left;
+ line-height:1.6;
+}
+
+.ganancia { background:#28a745; }
+.perdida { background:#dc3545; }
+
+/* BOTONES RESULTADO */
+.res-toggle button {
+ margin-right:5px;
+ padding:5px 10px;
+ border:none;
+ border-radius:8px;
+ cursor:pointer;
+ background:#444;
+ color:white;
+}
+
+/* BOTÓN BINANCE */
+#actualizarPrecio {
+ margin:25px 0;
+ padding:12px;
+ width:100%;
+ border:none;
+ border-radius:10px;
+ background:#ff9800;
+ font-weight:bold;
+ cursor:pointer;
+}
+
+/* GRÁFICA */
+canvas {
+ margin-top:20px;
+ background:#222;
+ border-radius:10px;
+ padding:10px;
+}
+
 </style>
-
 </head>
 
 <body>
@@ -67,7 +159,7 @@ canvas { background:#222; margin-top:20px; border-radius:10px;}
 
 <div class="slider-group">
 <label>Capital</label>
-<input type="range" id="capital" min="50000" max="10000000" value="500000">
+<input type="range" id="capital" min="10000" max="37000000" value="100000">
 <div class="valores" id="capitalVal"></div>
 </div>
 
@@ -101,11 +193,6 @@ canvas { background:#222; margin-top:20px; border-radius:10px;}
 
 <canvas id="grafica"></canvas>
 
-<div class="info">
-<h2>¿Cómo funciona?</h2>
-<p>Simula ganancias en P2P ajustando precios y ciclos.</p>
-</div>
-
 </div>
 
 <script>
@@ -125,23 +212,37 @@ const ventaVal=document.getElementById("ventaVal");
 const resValores=document.getElementById("resValores");
 const resultado=document.getElementById("resultado");
 
+// GRÁFICA HORIZONTAL APILADA
 let chart=new Chart(document.getElementById("grafica"),{
  type:'bar',
  data:{
   labels:["Resultado"],
   datasets:[
-   {data:[0],backgroundColor:"#00ffff"},
-   {data:[0],backgroundColor:"#ff9800"}
+   {data:[0]},
+   {data:[0]}
   ]
  },
- options:{scales:{x:{stacked:true},y:{stacked:true}}}
+ options:{
+  indexAxis:'y',
+  scales:{x:{stacked:true},y:{stacked:true}},
+  plugins:{legend:{display:false}}
+ }
 });
+
+// ANIMACIÓN SLIDER (relleno dinámico)
+function pintarSlider(slider){
+ let val=(slider.value-slider.min)/(slider.max-slider.min)*100;
+ let color=`linear-gradient(to right,#00ffff ${val}%,#333 ${val}%)`;
+ slider.style.setProperty('--track-color',color);
+}
 
 function actualizar(){
  capitalVal.innerText=Number(capital.value).toLocaleString()+" COP";
  ciclosVal.innerText=ciclos.value;
  compraVal.innerText=Number(compra.value).toLocaleString();
  ventaVal.innerText=Number(venta.value).toLocaleString();
+
+ [capital,ciclos,compra,venta].forEach(pintarSlider);
 }
 
 function calcular(){
@@ -155,6 +256,7 @@ function calcular(){
  }
 
  let gan=total-usdt;
+ let porcentaje=(gan/usdt*100).toFixed(2);
 
  let inv=usdt;
  let g=gan;
@@ -170,9 +272,9 @@ function calcular(){
  resultado.className="resultado "+(gan>=0?"ganancia":"perdida");
 
  resValores.innerHTML=`
- 💰 ${total.toFixed(2)} ${suf}<br>
- 📊 ${inv.toFixed(2)} ${suf}<br>
- 🚀 ${g.toFixed(2)} ${suf}
+ <strong>💰 Resultado final:</strong> ${total.toFixed(2)} ${suf}<br>
+ <strong>📊 Inversión inicial:</strong> ${inv.toFixed(2)} ${suf}<br>
+ <strong>🚀 Ganancia:</strong> ${g.toFixed(2)} ${suf} (${porcentaje}%)
  `;
 
  chart.data.datasets[0].data=[inv];
@@ -180,6 +282,7 @@ function calcular(){
  chart.update();
 }
 
+// EVENTOS
 [capital,ciclos,compra,venta].forEach(e=>{
  e.oninput=()=>{actualizar();calcular();}
 });
@@ -193,7 +296,8 @@ document.getElementById("actualizarPrecio").onclick=()=>{
  window.open("https://www.binance.com/referral/earn-together/refer2earn-usdc/claim?hl=es-LA&ref=GRO_28502_JI900&utm_source=default","_blank");
 };
 
-actualizar();calcular();
+actualizar();
+calcular();
 
 </script>
 
